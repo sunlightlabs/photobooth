@@ -11,12 +11,21 @@ import re
 import sys
 import time
 
+def ensure_path(path):
+    if not os.path.exists(path):
+        os.makedirs(path)
+
 config = ConfigParser.ConfigParser()
 config.read('photobooth.conf')
 
 pwd = os.path.abspath(os.path.dirname(__file__))
+
 strips_path = os.path.join(pwd, 'static', 'photos', 'strips')
+ensure_path(strips_path)
+
 photos_path = os.path.join(pwd, 'static', 'photos', 'raw')
+ensure_path(photos_path)
+
 templates_path = os.path.join(pwd, 'templates')
 templates = {}
 
