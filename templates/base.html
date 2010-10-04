@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<title>PhotoBooth</title>
+	<style>
+		* { cursor: none; }
+		body {
+			background: #000 url(http://127.0.0.1:8001/images/photobooth_bg.jpg) no-repeat fixed center;
+			margin: 0;
+			padding: 0;
+		}
+		ol.photos { list-style: none; margin: 0; padding: 0; }
+		ol.photos li { display: inline; }
+		ol.photos img {
+			background-color: #FFFFFF;
+			border: 1px solid #666;
+			border-radius: 5px 5px 5px 5px;
+			height: 120px;
+			padding: 10px;
+			width: 160px;
+		}
+		
+		div.controls { float: right; margin-right: 100px; text-align: center; width: 50%; }
+		
+		.dedication {
+			background-color: #7F4902;
+			border-radius: 0 10px 0 0;
+			color: #DBD296;
+			font-family: Helvetica;
+			font-size: 12px;
+			font-weight: bold;
+			margin: 0;
+			padding: 6px 10px 3px 6px;
+			position: fixed;
+			bottom: 0px;
+			left: 0px;
+		}
+		
+		.message {
+			color: #D33;
+			display: block;
+			font-family: "orgovan-rounded-web-1","orgovan-rounded-web-2";
+			font-weight: bold;
+			font-size: 80px;
+			height: 200px;
+			line-height: 140%;
+			padding-top: 50px;
+			text-shadow: 3px 3px 0 #FFF;
+			-webkit-transform: rotate(3deg);
+		}
+		
+		ul.strips {
+			float: left;
+			list-style: none;
+			margin: 0;
+			padding: 0;
+		}
+		ul.strips img {
+			-webkit-box-shadow: 1px 1px 5px #333;
+			height: 252px;
+			width: 85px;
+			position: absolute;
+		}
+		
+		img#current-strip {
+			display: none;
+			-webkit-box-shadow: 6px 6px 10px #333;
+			-webkit-transform: rotate(-9deg);
+			position: fixed;
+			top: 10%;
+			left: 300px;
+			z-index: 1000;
+			height: 900px;
+		}
+		
+		.strip-details {
+			display: none;
+			font-family: "orgovan-rounded-web-1","orgovan-rounded-web-2";
+			font-size: 40px;
+			padding: 50px 100px 0 100px;
+		}
+		
+		.strip-details p {
+			color: #FFF;
+			margin-bottom: 150px;
+			text-shadow: 3px 3px 0 #D33;
+		}
+		
+		.strip-details img.qrcode {
+			border: 6px solid #333;
+			border-radius: 5px 5px 5px 5px;
+			float: right;
+			height: 200px;
+			width: 200px;
+		}
+		
+	</style>
+	<script type="text/javascript" src="http://use.typekit.com/ehg1gir.js"></script>
+	<script type="text/javascript">try{Typekit.load();}catch(e){}</script>
+</head>
+<body>
+	<img src="" data-filename="" id="current-strip">
+	<p class="dedication">Created by Sunlight Labs in memory of Tim's shattered arm</p>
+	<ul class="strips"></ul>
+	<div class="controls">
+		<p class="message">Sunlight Photo Booth<br>Click to take a photo!</p>
+		<!--
+		<form action="#" method="post" id="shutter-form">
+			<button>Snap!</button>
+		</form>
+		-->
+		<ol class="photos"></ol>
+		<div class="strip-details">
+			<img src="" class="qrcode">
+			<p>Scan this QR code to pickup your photo strip on Flickr!</p>
+			<p>See all photos at sunlightlabs.com/photobooth</p>
+		</div>
+	</div>
+	
+	<script src="http://127.0.0.1:8001/scripts/jquery-1.4.2.min.js"></script>
+	<script src="http://127.0.0.1:8001/scripts/jquery-ui-1.8.5.custom.min.js"></script>
+	<script>
+	
+		// var WSDispatcher = function(url, funcs) {
+		// 	var ws = new WebSocket(url);
+		// 	ws.onopen = function() { this.onopen(); };
+		// 	ws.onmessage = function(e) {
+		// 		var resp = '';
+		// 		var msg = $.parseJSON(e.data);
+		// 		var action = msg.action;
+		// 		if (action) {
+		// 			var fn = funcs[action];
+		// 			if (fn) fn();
+		// 		}
+		// 	};
+		// 	ws.onclose = function() { this.onclose(); };
+		// };
+		// WSDispatcher.prototype.onopen = function() { }
+		// WSDispatcher.prototype.onclose = function() { }
+	
+		var PhotoBooth = function() {
+			var that = this;
+			this.isRunning = false;
+			$.getJSON('/init', function(data) {
+				$.each(data.photos, function(index, filename) {
+					that.tossStrip(filename);
+				});
+			});
+		};
+		PhotoBooth.prototype.randomOffset = function(max, padding) {
+			var padding = padding || 0;
+			var rnd = Math.floor(Math.random() * max);
+			return rnd + padding;
+		};
+		PhotoBooth.prototype.randomRotate = function(max) {
+			var rnd = Math.random() * (max * 2);
+			return rnd - max;
+		};
+		PhotoBooth.prototype.setMessage = function(s) {
+			var rot = 'rotate(' + this.randomRotate(10) + 'deg)';
+			$('.message').css('-webkit-transform', rot).html(s);
+		};
+		PhotoBooth.prototype.tossStrip = function(filename) {
+			var img = $('<img src="http://127.0.0.1:8001/photos/strips/' + filename + '">');
+			img.css('top', this.randomOffset(window.innerHeight - 300, 20) + 'px');
+			img.css('left', this.randomOffset(Math.floor(window.innerWidth / 2.5), 20) + 'px');
+			img.css('-webkit-transform', 'rotate(' + this.randomRotate(20) + 'deg)');
+			img.attr('data-filename', filename);
+			$('ul.strips').append($('<li></li>').append(img));
+		};
+		PhotoBooth.prototype.newStrip = function(filename) {
+			$('#current-strip').attr(
+				'data-filename', filename
+			).attr(
+				'src', 'http://127.0.0.1:8001/photos/strips/' + filename
+			).show();
+		};
+		PhotoBooth.prototype.reset = function() {
+			var currentStripFilename = $('#current-strip').attr('data-filename');
+			if (currentStripFilename) {
+				this.tossStrip(currentStripFilename);
+			}
+			$('#current-strip').hide();
+			$('.strip-details').hide();
+			$('ol.photos').html('');
+		};
+		PhotoBooth.prototype.commence = function() {
+			
+			var that = this;
+			
+			if (this.isRunning) return;
+			this.isRunning = true;
+			
+			this.reset();
+		
+			var ws = new WebSocket("ws://127.0.0.1:8000/pb");
+			ws.onopen = function() { };
+			ws.onmessage = function(e) {
+			
+				var msg = $.parseJSON(e.data);
+			
+				if (msg.action == 'strip') {
+					$('.qrcode').attr('src', msg.qrCodeUrl);
+					$('.strip-details').show();
+					that.newStrip(msg.photoId + '.jpg');
+					that.setMessage('Done!');
+				} else if (msg.action == 'processing') {
+					that.setMessage('Hang on, your photos are being processed...');
+				} else if (msg.action == 'prephoto') {
+					that.setMessage('Pose for photo ' + (msg.index + 1) + '!');
+				} else if (msg.action == 'postphoto') {
+					var img = $('<img src="http://127.0.0.1:8001/photos/raw/' + msg.filename + '">');
+					img.css('-webkit-transform', 'rotate(' + that.randomRotate(20) + 'deg)');
+					$('ol.photos').append($('<li></li>').append(img));
+				} else if (msg.action == 'close') {
+					ws.close();
+				}
+			};
+			ws.onclose = function() {
+				that.setMessage("Sunlight Photo Booth<br>Click to take a photo!");
+				that.isRunning = false;
+			};
+			
+		};
+		
+		$().ready(function(){
+			
+			var pb = new PhotoBooth();
+			
+			$('#shutter-form').submit(function() { return false; });
+			
+			$('body').click(function() {
+				pb.commence();
+				return false;
+			}).keypress(function(e) {
+				if (e.keyCode == '32') {
+					pb.commence();
+					event.preventDefault();
+				}
+			});
+			
+		});
+		
+	</script>
+</body>
+</html>

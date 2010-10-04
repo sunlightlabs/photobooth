@@ -1,0 +1,4 @@
+*.pyc
+photobooth.conf
+static/photos/raw/*.jpg
+static/photos/strips/*.jpg
