@@ -1,6 +1,5 @@
 # requires isightcapture for Mac OS X
-PIL
+#PIL
 gevent
 gevent-websocket
-#gunicorn
 flickrapi

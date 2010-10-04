@@ -2,9 +2,10 @@
 
 ## Installation
 
-* Copy photobooth.example.conf to photobooth.conf
+* Install [isightcapture](http://www.intergalactic.de/pages/iSight.html)
 * Install the Python packages found in requirements.txt
 * Install [PIL](http://www.pythonware.com/products/pil/)
+* Copy photobooth.example.conf to photobooth.conf
 
 ## Settings
 
