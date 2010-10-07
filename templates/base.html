@@ -105,11 +105,6 @@
 	<ul class="strips"></ul>
 	<div class="controls">
 		<p class="message">Sunlight Photo Booth<br>Click to take a photo!</p>
-		<!--
-		<form action="#" method="post" id="shutter-form">
-			<button>Snap!</button>
-		</form>
-		-->
 		<ol class="photos"></ol>
 		<div class="strip-details">
 			<img src="" class="qrcode">
@@ -121,23 +116,6 @@
 	<script src="http://127.0.0.1:8001/scripts/jquery-1.4.2.min.js"></script>
 	<script src="http://127.0.0.1:8001/scripts/jquery-ui-1.8.5.custom.min.js"></script>
 	<script>
-	
-		// var WSDispatcher = function(url, funcs) {
-		// 	var ws = new WebSocket(url);
-		// 	ws.onopen = function() { this.onopen(); };
-		// 	ws.onmessage = function(e) {
-		// 		var resp = '';
-		// 		var msg = $.parseJSON(e.data);
-		// 		var action = msg.action;
-		// 		if (action) {
-		// 			var fn = funcs[action];
-		// 			if (fn) fn();
-		// 		}
-		// 	};
-		// 	ws.onclose = function() { this.onclose(); };
-		// };
-		// WSDispatcher.prototype.onopen = function() { }
-		// WSDispatcher.prototype.onclose = function() { }
 	
 		var PhotoBooth = function() {
 			var that = this;

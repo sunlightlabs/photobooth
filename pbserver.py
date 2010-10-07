@@ -101,14 +101,15 @@ def websocket_app(environ, start_response):
             
             # take photo
             photo_booth.take_photo(photoset)
+            photo_path = photoset['photos'][-1]
             
             # post-photo message
             send(ws, {
                 'action': 'postphoto',
                 'index': i,
                 'count': count,
-                'filename': path.split('/')[-1],
-                'localPath': path,
+                'filename': photo_path.split('/')[-1],
+                'localPath': photo_path,
             })
             
         send(ws, {'action': 'postset'})
@@ -122,14 +123,16 @@ def websocket_app(environ, start_response):
             send(ws, {'action': 'processing'})
             flickr_url = flickr.upload(strip_path)
             time.sleep(2)
+        else:
+            flickr_url = None
         
         # return final response
         ws.send(json.dumps({
             'action': 'strip',
             'photoId': photoset['id'],
             'localPath': strip_path,
-            'flickrUrl': flickr_url,
-            'qrCodeUrl': qrcode.image_url(flickr_url),
+            'flickrUrl': flickr_url or '',
+            'qrCodeUrl': qrcode.image_url(flickr_url) if flickr_url else '',
         }))
         
         # close websocket connection
