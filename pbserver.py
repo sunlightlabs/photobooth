@@ -132,7 +132,7 @@ def websocket_app(environ, start_response):
             'photoId': photoset['id'],
             'localPath': strip_path,
             'flickrUrl': flickr_url or '',
-            'qrCodeUrl': qrcode.image_url(flickr_url) if flickr_url else '',
+            'qrCodeUrl': qrcode.image_url(flickr_url or 'http://sunlightlabs.com/photobooth/'),
         }))
         
         # close websocket connection
