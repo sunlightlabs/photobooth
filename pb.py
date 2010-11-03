@@ -1,7 +1,6 @@
 from PIL import Image, ImageEnhance, ImageColor, ImageDraw
 import json
 import os
-import sqlite3
 import subprocess
 import uuid
 
