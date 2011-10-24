@@ -52,12 +52,8 @@ If everything works, you should be prompted for each photo. The paths of the pho
 
 ## Running it for real
 
-Okay, so I don't know of a good way to server the static files from the same server as the WebSocket handler. The only way to get around this in the short time that I had was to run two separate servers: one for WebSocket and the other for static media. Open up two terminal sessions. In the first, run:
+Run:
 
-	python pbserver.py static
-
-And in the second, run:
-
-	python pbserver.py app
+	python pbserver.py
 
 If everything worked, you can go to http://127.0.0.1:8000 and use the photobooth!

@@ -1,5 +1,6 @@
 # requires isightcapture for Mac OS X
 #PIL
 gevent
-gevent-websocket
+#gevent-websocket
+tornado
 flickrapi
