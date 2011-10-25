@@ -74,7 +74,8 @@ class PhotoboothInitHandler(web.RequestHandler):
     def get(self):
         data = {'photos': []}
         for filename in os.listdir(strips_path):
-            data['photos'].append(filename)
+            if not filename.startswith('.'):
+                data['photos'].append(filename)
         self.finish(data)
 
 class PhotoboothWebSocket(websocket.WebSocketHandler):
