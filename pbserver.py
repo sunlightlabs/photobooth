@@ -177,7 +177,7 @@ if __name__ == '__main__':
         
         server = HTTPServer(Application(urls))
         server.bind(8000)
-        server.start(0)
+        server.start(4)
         IOLoop.instance().start()
     
     serve_photobooth()
