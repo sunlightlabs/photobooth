@@ -68,14 +68,14 @@ def send(ws, params):
 
 class PhotoboothHandler(web.RequestHandler):
     def get(self):
-        self.write(load_template('base.html'))
+        self.finish(load_template('base.html'))
         
 class PhotoboothInitHandler(web.RequestHandler):
     def get(self):
         data = {'photos': []}
         for filename in os.listdir(strips_path):
             data['photos'].append(filename)
-        self.write(data)
+        self.finish(data)
 
 class PhotoboothWebSocket(websocket.WebSocketHandler):
     
